@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Problemas multiplicativos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#FFFCF0;--ink:#1B2559;--card:#fff;--grid:#DCE6FF;--pri:#2F55D4;--ok:#0E8A5B;--no:#D6453D;--sun:#FFC933;--soft:#E3EAFF;--a:#E8590C;--b:#C2185B;--c:#7B1FA2;--d:#0277BD;--g:#2E7D32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152E;--ink:#EEF1FF;--card:#1A2147;--grid:#1E2755;--pri:#8FA8FF;--ok:#4FD69C;--no:#FF8A80;--sun:#FFD25A;--soft:#2A346B;--a:#FF9A57;--b:#FF7BB0;--c:#C58BFF;--d:#5CC4FF;--g:#7BDC82}}
+:root[data-theme="dark"]{--bg:#10152E;--ink:#EEF1FF;--card:#1A2147;--grid:#1E2755;--pri:#8FA8FF;--ok:#4FD69C;--no:#FF8A80;--sun:#FFD25A;--soft:#2A346B;--a:#FF9A57;--b:#FF7BB0;--c:#C58BFF;--d:#5CC4FF;--g:#7BDC82}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+body{margin:0;font:600 17px/1.55 Nunito,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/26px 26px,var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--bg);border-bottom:3px solid var(--ink);padding:8px 16px}
+header div{max-width:720px;margin:auto;display:flex;align-items:center;gap:12px;font-weight:900}
+.pb{flex:1;height:14px;border:3px solid var(--ink);border-radius:9px;overflow:hidden}
+#bar{height:100%;width:0;background:var(--sun);transition:width .4s}
+main{max-width:720px;margin:auto;padding:8px 16px 40px}
+h1{font-size:34px;line-height:1.15;margin:24px 0 6px;font-weight:900}
+h2{font-size:23px;margin:0 0 6px;font-weight:900;color:var(--k)}
+h3{font-size:18px;margin:14px 0 2px;font-weight:900}
+section{margin:26px 0;padding:14px 16px 16px 18px;background:var(--card);border:3px solid var(--ink);border-left:12px solid var(--k);border-radius:16px 16px 16px 4px}
+p{margin:6px 0}
+ol{padding-left:24px}li{margin:6px 0}
+button{font:inherit;font-weight:900;padding:7px 14px;border:3px solid var(--ink);border-radius:10px;background:var(--sun);color:#1B2559;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+input{width:88px;font:inherit;font-size:20px;font-weight:900;padding:6px;border:3px solid var(--ink);border-radius:10px;background:var(--bg);color:var(--ink);text-align:center}
+textarea{width:100%;font:inherit;padding:8px;border:3px solid var(--ink);border-radius:10px;background:var(--bg);color:var(--ink)}
+.q,.mc,.inv{margin:14px 0;padding-top:10px;border-top:2px dashed var(--grid)}
+.fb{display:block;min-height:1.5em;font-weight:800;margin-top:4px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.mc button{margin:3px 4px 3px 0}.mc button.ok{background:var(--ok);color:#fff}.mc button.no{background:var(--no);color:#fff;opacity:.75}
+.eq{font-size:20px;font-weight:900;background:var(--soft);border-radius:10px;padding:8px 12px;margin:8px 0}
+.step{margin:10px 0;padding-left:10px;border-left:5px solid var(--sun)}
+.lock{opacity:.35}
+.sl{display:block;color:var(--pri)}
+details{margin:6px 0}summary{cursor:pointer;font-weight:900;color:var(--pri)}
+.dots{display:grid;gap:5px;max-width:300px;margin:8px 0}
+.dots i,.grp i,.row i{display:block;aspect-ratio:1;border-radius:50%;background:var(--pri)}
+.grp{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.grp span{display:grid;grid-template-columns:repeat(3,11px);gap:3px;padding:5px;border:2px dashed var(--ink);border-radius:10px}
+.row{display:inline-flex;gap:4px;width:130px}.row i{flex:1}
+.cr{display:flex;align-items:center;gap:8px;margin:3px 0}
+#end{text-align:center;font-size:24px;font-weight:900}
+</style>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const q=(t,a,h)=>`<div class="q" data-a="${a}" data-h="${h}"><p>${t}</p><input type="number" inputmode="numeric" aria-label="Tu respuesta"> <button>Probar</button><span class="fb" aria-live="polite"></span></div>`;
+const mc=(t,o,k,h)=>`<div class="mc" data-h="${h||''}"><p>${t}</p>${o.map((x,i)=>`<button${i==k?' data-ok':''}>${x}</button>`).join('')}<span class="fb" aria-live="polite"></span></div>`;
+const stp=(l,w,lock)=>`<div class="step${lock?' lock':''}"${lock?' inert':''}><b class="sl">${l}</b>${w}</div>`;
+const inv=(op,ex)=>`<div class="inv"><p>Inventa una historia para <b>${op}</b>. Escríbela aquí o en tu cuaderno.</p><textarea rows="3" aria-label="Tu historia"></textarea><button>Listo</button><span class="fb" aria-live="polite"></span><details><summary>Ver un ejemplo</summary>${ex}</details></div>`;
+const dt=n=>'<i></i>'.repeat(n);
+const dd=(s,t)=>`<details><summary>${s}</summary>${t}</details>`;
+const ty=(t,p,v,s)=>`<h3>${t}</h3><p>${p}</p>${dd('Ver el dibujo',v)}${dd('Ver cómo se resuelve',`<p class="eq">${s}</p>`)}`;
+</script>
+</head>
+<body>
+<header><div>🧩 <span>Problemas multiplicativos</span><span class="pb"><div id="bar"></div></span><span>⭐ <span id="st">0</span>/<span id="tt"></span></span></div></header>
+<main>
+<h1>Problemas multiplicativos</h1>
+<p>Vamos a resolver problemas de la vida real con multiplicación usando el Modelo de 4 Pasos. Ten tu cuaderno cerca y gana estrellas con cada respuesta.</p>
+
+<section style="--k:var(--d)">
+<h2>¿Cómo resolver sin confundirse?</h2>
+<p>A veces no sabes por dónde empezar. Para resolver cualquier problema, sigue estos 4 pasos, siempre en este orden:</p>
+<ol>
+<li><b>Entiendo:</b> leo con calma y subrayo los datos. ¿Qué me preguntan?</li>
+<li><b>Planifico:</b> hago un dibujo y elijo la operación.</li>
+<li><b>Resuelvo:</b> hago el cálculo.</li>
+<li><b>Respondo:</b> reviso que tenga sentido y escribo la respuesta en una frase.</li>
+</ol>
+</section>
+
+<section style="--k:var(--a)">
+<h2>Los 3 disfraces de la multiplicación</h2>
+<p>En la vida real, la multiplicación se «disfraza» de 3 formas. Abre cada tarjeta.</p>
+<script>
+document.write(ty('Tipo 1: grupos iguales 🎁','El curso preparó <b>8 bolsas</b> de sorpresa para el aniversario. En cada bolsa pusieron <b>6 dulces</b>. ¿Cuántos dulces usaron en total?',`<div class="grp">${Array(8).fill(`<span>${dt(6)}</span>`).join('')}</div>`,'8 × 6 = 48 dulces'));
+document.write(ty('Tipo 2: arreglo rectangular 🪑','La profesora ordenó <b>5 filas</b> de sillas con <b>9 sillas</b> cada fila. ¿Cuántas sillas usó?',`<div class="dots" style="grid-template-columns:repeat(9,1fr)">${dt(45)}</div>`,'5 × 9 = 45 sillas'));
+document.write(ty('Tipo 3: correspondencia múltiple 🏀','Cada equipo del torneo tiene <b>7 jugadores</b>. Hay <b>4 equipos</b> inscritos. ¿Cuántos jugadores hay?',[1,2,3,4].map(i=>`<div class="cr"><b>Equipo ${i}</b><span class="row">${dt(7)}</span></div>`).join(''),'4 × 7 = 28 jugadores'));
+</script>
+</section>
+
+<section style="--k:var(--c)">
+<h2>Tú clasificas</h2>
+<p>Lee cada problema y elige de qué tipo es.</p>
+<script>
+const T3=['Grupos iguales','Arreglo','Correspondencia'];
+document.write(mc('<b>A.</b> Hay 3 estantes con 10 libros cada uno. ¿Cuántos libros hay?',T3,0,'Son grupos que se repiten, todos con la misma cantidad.'));
+document.write(mc('<b>B.</b> En el patio hay 6 filas de 8 baldosas. ¿Cuántas baldosas hay?',T3,1,'Filas y columnas forman un rectángulo.'));
+document.write(mc('<b>C.</b> Cada bicicleta tiene 2 ruedas. Hay 9 bicicletas. ¿Cuántas ruedas hay?',T3,2,'A cada bicicleta le corresponden 2 ruedas.'));
+document.write(mc('<b>¿Multiplicar o no?</b> En 5 cajas hay 8 lápices cada una. ¿Cuántos lápices hay en total? ¿Qué operación corresponde?',['5 × 8 = 40','5 + 8 = 13','8 − 5 = 3'],0,'Son 5 grupos iguales de 8.'));
+</script>
+</section>
+
+<section style="--k:var(--g)">
+<h2>Resolvamos con los 4 pasos</h2>
+<p>🏊 <b>Clases de natación:</b> en el club hay 4 horarios de clases. En cada horario entran 9 niños. ¿Cuántos niños nadan en total en un día?</p>
+<script>
+document.write(stp('Paso 1 · Entiendo',q('¿Cuántos niños entran en cada horario?',9,'Busca el número que viene después de «En cada horario entran».')));
+document.write(stp('Paso 2 · Planifico',mc('¿Qué operación sirve?',['4 + 9','4 × 9','9 − 4'],1,'Son 4 grupos iguales de 9 niños.'),1));
+document.write(stp('Paso 3 · Resuelvo',q('4 × 9 = ?',36,'El doble de 9 es 18. El doble de 18 es…'),1));
+document.write(stp('Paso 4 · Respondo',mc('¿Cuál es la respuesta completa?',['36','En total nadan 36 niños en un día.','Nadan 13 niños'],1,'Una buena respuesta es una frase, con su unidad.'),1));
+</script>
+<p style="margin-top:22px">🎭 <b>El teatro del colegio:</b> compraron 8 disfraces a $9 cada uno. Además compraron 3 pelucas a $5 cada una. ¿Cuánto gastaron en total? Este tiene dos partes.</p>
+<script>
+document.write(stp('Parte A · Los disfraces',q('8 × 9 = ?',72,'10 × 9 = 90, menos 9.')));
+document.write(stp('Parte B · Las pelucas',q('3 × 5 = ?',15,'Salta de 5 en 5: 5, 10, …'),1));
+document.write(stp('Parte C · Junto todo',q('72 + 15 = ? pesos',87,'72 + 10 = 82, y luego suma 5.'),1));
+</script>
+</section>
+
+<section style="--k:var(--no)">
+<h2>¡Encuentra el error!</h2>
+<p>Felipe resolvió: «Hay 3 bandejas con 5 pasteles y otra con 6 pasteles. ¿Cuántos hay en total?» Él escribió 3 × 5 = 15. Respuesta: 15 pasteles.</p>
+<script>
+document.write(mc('¿Qué se le olvidó a Felipe?',['La bandeja con 6 pasteles','Tenía que restar','No se equivocó'],0,'Mira el problema: ¿usó todos los datos?'));
+document.write(q('¿Cuántos pasteles hay de verdad?',21,'3 × 5 = 15, y falta sumar la otra bandeja.'));
+</script>
+</section>
+
+<section style="--k:var(--b)">
+<h2>Ahora tú inventas el problema</h2>
+<p>Yo te doy la operación y tú creas la historia.</p>
+<script>document.write(inv('4 × 9 = 36','Hay 4 bandejas con 9 galletas cada una. ¿Cuántas galletas hay en total?'))</script>
+</section>
+
+<section style="--k:var(--d)">
+<h2>Ejercicios para tu cuaderno ✏️</h2>
+<p>Resuelve usando el Modelo de 4 Pasos.</p>
+<script>
+document.write(q('Lucía compró 3 packs de yogures. Cada pack tiene 4 yogures. ¿Cuántos compró?',12,'3 grupos de 4: 4 + 4 + 4.'));
+document.write(q('Cada araña tiene 8 patas. Si hay 5 arañas, ¿cuántas patas hay en total?',40,'5 × 8: piensa 5 × 10 = 50 y réstale 10.'));
+document.write(q('En el patio hay un arreglo de 7 filas y 6 columnas de macetas. ¿Cuántas macetas hay?',42,'7 × 6 = 7 × 5 + 7.'));
+document.write(mc('Carlos dice que 4 × 5 es 25. ¿Tiene razón?',['Sí, tiene razón','No: 4 × 5 = 20. El 25 es de 5 × 5'],1,'Cuenta de 5 en 5, cuatro veces.'));
+document.write(q('Si tengo 16 yogures y los reparto en 2 packs iguales, ¿cuántos quedan por pack?',8,'Piensa 2 × __ = 16. Repartir en partes iguales se llama dividir: 16 ÷ 2.'));
+document.write(inv('6 × 3 = 18','Hay 6 cajas con 3 lápices cada una. ¿Cuántos lápices hay en total?'));
+</script>
+</section>
+
+<section style="--k:var(--g)">
+<h2>Problemas de la vida real</h2>
+<script>
+document.write(q('🍎 En el mercado hay 6 puestos de frutas y cada uno tiene 9 kilos de manzanas. ¿Cuántos kilos de manzanas hay en total?',54,'6 × 9 = 60 − 6.'));
+document.write(q('🏅 El resultado de una multiplicación es 45 y uno de los factores es 9. ¿Cuál es el otro factor?',5,'9 × __ = 45. Cuenta de 9 en 9.'));
+</script>
+</section>
+
+<section style="--k:var(--c)">
+<h2>Desafíos supremos ⚡</h2>
+<p>⛏️ <b>ObraCraft, la poción de invisibilidad:</b> para fabricar 1 poción necesitas 3 hongos mágicos y 2 gotas de lava. Quieres hacer 7 pociones.</p>
+<script>
+document.write(q('¿Cuántos hongos necesitas?',21,'7 × 3 = 2 × 7 + 7.'));
+document.write(q('¿Cuántas gotas de lava necesitas?',14,'El doble de 7.'));
+document.write(q('¿Y cuántos ingredientes en total?',35,'Suma los hongos y las gotas.'));
+document.write(q('⌛ Viaje en el tiempo: empiezas con el 2 y en cada paso multiplicas por 3. ¿A qué número llegas después de 4 pasos?',162,'2 → 6 → 18 → …'));
+document.write(q('🎁 En el aniversario, 3° básico debe armar 48 paquetes de regalos y hay 8 estudiantes en el comité. Si cada uno arma la misma cantidad, ¿cuántos paquetes arma cada estudiante?',6,'8 × __ = 48.'));
+</script>
+</section>
+
+<section style="--k:var(--g)" id="end" hidden>
+<p>🏆 ¡Felicidades! Ya sabes resolver problemas multiplicativos con el Modelo de 4 Pasos. ¡Eres un matemático en acción!</p>
+</section>
+</main>
+<script>
+const tot=$$('.q,.mc,.inv').length;$('#tt').textContent=tot;let st=0;
+function win(e){if(e.dataset.d)return;e.dataset.d=1;st++;$('#st').textContent=st;$('#bar').style.width=100*st/tot+'%';const s=e.closest('.step'),n=s&&s.nextElementSibling;if(n&&n.classList.contains('lock')){n.classList.remove('lock');n.removeAttribute('inert')}if(st==tot){$('#end').hidden=false;$('#end').scrollIntoView({behavior:'smooth'})}}
+$$('.q').forEach(w=>{const i=$('input',w),f=$('.fb',w);const go=()=>{if(i.value==='')return;if(+i.value===+w.dataset.a){f.textContent='¡Bien! ⭐';f.className='fb ok';win(w)}else{f.textContent='Casi… Pista: '+w.dataset.h;f.className='fb no'}};$('button',w).onclick=go;i.onkeydown=e=>e.key==='Enter'&&go()});
+$$('.mc').forEach(w=>$$('button',w).forEach(b=>b.onclick=()=>{const f=$('.fb',w);if('ok' in b.dataset){b.classList.add('ok');f.textContent='¡Exacto! ⭐';f.className='fb ok';win(w)}else{b.classList.add('no');f.textContent='Mmm, prueba otra. '+w.dataset.h;f.className='fb no'}}));
+$$('.inv').forEach(w=>$('button',w).onclick=()=>{const f=$('.fb',w);if($('textarea',w).value.trim().length<15){f.textContent='Cuéntame un poquito más: ¿qué se repite en tu historia?';f.className='fb no'}else{f.textContent='¡Qué buena historia! ⭐';f.className='fb ok';win(w)}});
+</script>
+</body>
+</html>

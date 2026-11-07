@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tablas de multiplicar con estrategias</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#FFFCF0;--ink:#1B2559;--card:#fff;--grid:#DCE6FF;--pri:#2F55D4;--ok:#0E8A5B;--no:#D6453D;--sun:#FFC933;--soft:#E3EAFF;--a:#E8590C;--b:#C2185B;--c:#7B1FA2;--d:#0277BD;--g:#2E7D32;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10152E;--ink:#EEF1FF;--card:#1A2147;--grid:#1E2755;--pri:#8FA8FF;--ok:#4FD69C;--no:#FF8A80;--sun:#FFD25A;--soft:#2A346B;--a:#FF9A57;--b:#FF7BB0;--c:#C58BFF;--d:#5CC4FF;--g:#7BDC82}}
+:root[data-theme="dark"]{--bg:#10152E;--ink:#EEF1FF;--card:#1A2147;--grid:#1E2755;--pri:#8FA8FF;--ok:#4FD69C;--no:#FF8A80;--sun:#FFD25A;--soft:#2A346B;--a:#FF9A57;--b:#FF7BB0;--c:#C58BFF;--d:#5CC4FF;--g:#7BDC82}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px)}
+body{margin:0;font:600 17px/1.55 Nunito,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/26px 26px,var(--bg)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--bg);border-bottom:3px solid var(--ink);padding:8px 16px}
+header div{max-width:720px;margin:auto;display:flex;align-items:center;gap:12px;font-weight:900}
+.pb{flex:1;height:14px;border:3px solid var(--ink);border-radius:9px;overflow:hidden}
+#bar{height:100%;width:0;background:var(--sun);transition:width .4s}
+main{max-width:720px;margin:auto;padding:8px 16px 40px}
+h1{font-size:34px;line-height:1.15;margin:24px 0 6px;font-weight:900}
+h2{font-size:23px;margin:0 0 6px;font-weight:900;color:var(--k)}
+section{margin:26px 0;padding:14px 16px 16px 18px;background:var(--card);border:3px solid var(--ink);border-left:12px solid var(--k);border-radius:16px 16px 16px 4px}
+p{margin:6px 0}
+button{font:inherit;font-weight:900;padding:7px 14px;border:3px solid var(--ink);border-radius:10px;background:var(--sun);color:#1B2559;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+input{width:88px;font:inherit;font-size:20px;font-weight:900;padding:6px;border:3px solid var(--ink);border-radius:10px;background:var(--bg);color:var(--ink);text-align:center}
+.q,.mc{margin:14px 0;padding-top:10px;border-top:2px dashed var(--grid)}
+.fb{display:block;min-height:1.5em;font-weight:800;margin-top:4px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.mc button{margin:3px 4px 3px 0}.mc button.ok{background:var(--ok);color:#fff}.mc button.no{background:var(--no);color:#fff;opacity:.75}
+.eq{font-size:21px;font-weight:900;background:var(--soft);border-radius:10px;padding:8px 12px;margin:8px 0}
+.dots{display:grid;gap:6px;max-width:300px;margin:10px 0}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--pri)}.dots i.y{background:var(--a)}
+.bs{display:flex;flex-wrap:wrap;gap:6px}
+#fg{display:flex;gap:5px;align-items:flex-end;height:104px;margin:10px 0}
+#fg button{flex:1;height:92px;padding:0;border-radius:12px 12px 6px 6px;background:#FFE08A}
+#fg .dn{height:30px;background:#C9C9C9;opacity:.7}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;margin:8px auto}
+td,th{width:36px;height:36px;text-align:center;border:1px solid var(--grid);cursor:pointer}
+th{background:var(--sun);color:#1B2559;cursor:default}
+td.hi{background:var(--soft)}td.sel{background:var(--sun);color:#1B2559;font-weight:900}
+#end{text-align:center;font-size:24px;font-weight:900}
+</style>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const q=(t,a,h)=>`<div class="q" data-a="${a}" data-h="${h}"><p>${t}</p><input type="number" inputmode="numeric" aria-label="Tu respuesta"> <button>Probar</button><span class="fb" aria-live="polite"></span></div>`;
+const mc=(t,o,k,h)=>`<div class="mc" data-h="${h||''}"><p>${t}</p>${o.map((x,i)=>`<button${i==k?' data-ok':''}>${x}</button>`).join('')}<span class="fb" aria-live="polite"></span></div>`;
+const sp=(a,b)=>`<div class="sp" data-a="${a}" data-b="${b}"><div class="dots"></div><div class="bs"></div><p class="eq t"></p></div>`;
+</script>
+</head>
+<body>
+<header><div>🧠 <span>Tablas con estrategias</span><span class="pb"><div id="bar"></div></span><span>⭐ <span id="st">0</span>/<span id="tt"></span></span></div></header>
+<main>
+<h1>Tablas de multiplicar con estrategias</h1>
+<p>No hay que memorizar: ¡hay que entender cómo se construyen! Si se te olvida una tabla, la armas. Ten tu cuaderno cerca y gana estrellas con cada respuesta.</p>
+
+<section style="--k:var(--a)">
+<h2>Estrategia 1: la distributiva</h2>
+<p>Si no sabes una tabla, <b>descomponla</b> en dos que sí sepas. Mira 6 × 7: toca cómo cortar el 7.</p>
+<script>document.write(sp(6,7))</script>
+<p>Otro ejemplo: 8 × 6. Corta el 6 como quieras.</p>
+<script>document.write(sp(8,6))</script>
+<script>document.write(q('Entonces, ¿cuánto es 8 × 6?',48,'8 × 5 = 40 y 8 × 1 = 8. Súmalos.'))</script>
+<script>document.write(mc('Quiz rápido: usa la distributiva. 7 × 6 = ?',['36','42','48','45'],1,'7 × 5 = 35, y falta 7 × 1.'))</script>
+</section>
+
+<section style="--k:var(--d)">
+<h2>Construyendo la tabla del 3</h2>
+<p>Usemos la distributiva: <b>3 = 2 + 1</b>.</p>
+<p class="eq">3 × 7 = 2 × 7 + 1 × 7 = 14 + 7 = 21</p>
+<script>document.write(q('Ahora tú: 3 × 8 = 2 × 8 + 1 × 8. ¿Cuánto da?',24,'El doble de 8 es 16. Súmale 8.'))</script>
+</section>
+
+<section style="--k:var(--b)">
+<h2>Estrategia 2: doble del doble</h2>
+<p>La tabla del 2 es calcular el doble. Multiplicar por <b>4</b> es hacer el doble del doble.</p>
+<p class="eq">4 × 6 → doble de 6 = 12 → doble de 12 = 24</p>
+<script>document.write(q('Abre tu cuaderno. 4 × 7 = ?',28,'El doble de 7 es 14. El doble de 14 es…'))</script>
+</section>
+
+<section style="--k:var(--c)">
+<h2>Estrategia 3: la tabla del 9 con dedos 🖐️</h2>
+<p>Pon tus 10 dedos frente a ti. Para 9 × 3, baja el dedo número 3. Toca un dedo para bajarlo.</p>
+<div id="fg"></div>
+<p class="eq" id="ft">Toca un dedo.</p>
+<p><b>Otro truco:</b> 9 × algo = 10 × algo − algo. Por ejemplo, 9 × 6 = 60 − 6 = 54.</p>
+<script>document.write(q('9 × 7 = 70 − 7 = ?',63,'70 − 7: quita 10 y devuelve 3.'))</script>
+</section>
+
+<section style="--k:var(--g)">
+<h2>La tabla completa</h2>
+<p>Toca un número y busca patrones. Mira la fila del 9: las decenas suben y las unidades bajan.</p>
+<div class="tw"><table id="tb"></table></div>
+<p class="eq" id="tx">Toca un número de la tabla.</p>
+</section>
+
+<section style="--k:var(--no)">
+<h2>¡Encuentra el error!</h2>
+<p>Un estudiante usó la distributiva para calcular 2 × 12 y escribió: (2 + 6) + (2 + 6) = 8 + 8 = 16.</p>
+<script>document.write(mc('¿Qué hizo mal?',['Sumó 2 + 6 en vez de multiplicar 2 × 6','El 12 no se puede partir','Tenía que restar'],0,'Partió el 12 en 6 + 6, pero después no multiplicó.'))</script>
+<script>document.write(q('¿Cuánto es 2 × 12 de verdad? (2 × 6 + 2 × 6)',24,'2 × 6 = 12. Y 12 + 12 = …'))</script>
+</section>
+
+<section style="--k:var(--d)">
+<h2>Ejercicios para tu cuaderno ✏️</h2>
+<p>Usa la estrategia que prefieras.</p>
+<script>
+document.write(q('6 × 7 con distributiva',42,'6 × 5 = 30 y 6 × 2 = 12.'));
+document.write(q('4 × 8 con doble del doble',32,'El doble de 8 es 16. El doble de 16 es…'));
+document.write(q('9 × 6 con los dedos',54,'Baja el dedo 6: 5 a la izquierda, 4 a la derecha.'));
+document.write(q('3 × 9 con distributiva',27,'2 × 9 = 18, y suma 9.'));
+document.write(q('8 × 7 = 8 × 5 + 8 × 2 = ?',56,'8 × 5 = 40 y 8 × 2 = 16.'));
+document.write(q('9 × 9, usa 10 × 9 − 9',81,'10 × 9 = 90. Réstale 9.'));
+</script>
+</section>
+
+<section style="--k:var(--a)">
+<h2>Problemas de la vida real</h2>
+<script>
+document.write(q('🎪 El festival: en el gimnasio pusieron 9 filas de sillas con 8 sillas cada una. ¿Cuántas sillas hay en total?',72,'9 × 8: piensa 10 × 8 = 80 y réstale 8.'));
+document.write(q('🏊 En el club de natación hay 4 horarios y en cada uno entran 9 niños. ¿Cuántos niños nadan en un día?',36,'4 × 9: doble del doble de 9.'));
+document.write(q('⛏️ ObraCraft: un muro mágico lleva 8 filas de bloques con 7 bloques cada una. ¿Cuántos bloques necesitas?',56,'8 × 7 = 8 × 5 + 8 × 2.'));
+document.write(mc('🎯 El blanco secreto: tienes los factores 3, 4, 6 y 8. Usando solo dos, ¿qué multiplicación da el resultado más cerca de 30?',['3 × 8 = 24','4 × 8 = 32','6 × 8 = 48','4 × 6 = 24'],1,'Prueba todas y mira cuál queda más cerca de 30.'));
+</script>
+</section>
+
+<section style="--k:var(--g)" id="end" hidden>
+<p>🧠 ¡Increíble! Ya tienes las estrategias para dominar <b>todas</b> las tablas de multiplicar.</p>
+</section>
+</main>
+<script>
+const tot=$$('.q,.mc').length;$('#tt').textContent=tot;let st=0;
+function win(e){if(e.dataset.d)return;e.dataset.d=1;st++;$('#st').textContent=st;$('#bar').style.width=100*st/tot+'%';if(st==tot){$('#end').hidden=false;$('#end').scrollIntoView({behavior:'smooth'})}}
+$$('.q').forEach(w=>{const i=$('input',w),f=$('.fb',w);const go=()=>{if(i.value==='')return;if(+i.value===+w.dataset.a){f.textContent='¡Bien! ⭐';f.className='fb ok';win(w)}else{f.textContent='Casi… Pista: '+w.dataset.h;f.className='fb no'}};$('button',w).onclick=go;i.onkeydown=e=>e.key==='Enter'&&go()});
+$$('.mc').forEach(w=>$$('button',w).forEach(b=>b.onclick=()=>{const f=$('.fb',w);if('ok' in b.dataset){b.classList.add('ok');f.textContent='¡Exacto! ⭐';f.className='fb ok';win(w)}else{b.classList.add('no');f.textContent='Mmm, prueba otra. '+w.dataset.h;f.className='fb no'}}));
+$$('.sp').forEach(el=>{const a=+el.dataset.a,b=+el.dataset.b,d=$('.dots',el),t=$('.t',el),bs=$('.bs',el);d.style.gridTemplateColumns=`repeat(${b},1fr)`;
+const draw=c=>{d.innerHTML=Array.from({length:a*b},(_,i)=>`<i class="${!c||i%b<c?'':'y'}"></i>`).join('');t.innerHTML=c?`${a} × ${c} = <b>${a*c}</b> y ${a} × ${b-c} = <b>${a*(b-c)}</b> → ${a*c} + ${a*(b-c)} = <b>${a*b}</b>`:`${a} × ${b}: toca una forma de cortar el ${b}`};
+for(let c=1;c<b;c++){const x=document.createElement('button');x.textContent=`${c} + ${b-c}`;x.onclick=()=>draw(c);bs.append(x)}draw(0)});
+const F=$('#fg');for(let i=1;i<=10;i++){const b=document.createElement('button');b.textContent=i;b.setAttribute('aria-label','Dedo '+i);b.onclick=()=>{$$('button',F).forEach((x,j)=>x.classList.toggle('dn',j+1===i));$('#ft').innerHTML=`Dedo ${i} abajo: a la izquierda quedan <b>${i-1}</b> (decenas) y a la derecha <b>${10-i}</b> (unidades). ¡9 × ${i} = <b>${9*i}</b>!`};F.append(b)}
+const T=$('#tb');let h='<tr><th>×'+[...Array(10)].map((_,i)=>`<th>${i+1}`).join('')+'</tr>';for(let r=1;r<=10;r++)h+=`<tr><th>${r}`+[...Array(10)].map((_,c)=>`<td data-r="${r}" data-c="${c+1}">${r*(c+1)}`).join('')+'</tr>';T.innerHTML=h;
+T.onclick=e=>{const t=e.target.closest('td');if(!t)return;const r=t.dataset.r,c=t.dataset.c;$$('td',T).forEach(x=>x.className=x==t?'sel':(x.dataset.r==r||x.dataset.c==c)?'hi':'');$('#tx').textContent=`${r} × ${c} = ${r*c}`};
+</script>
+</body>
+</html>
